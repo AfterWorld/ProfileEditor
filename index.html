@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadow Monarch — SeenU Theme Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="bootSplash" class="boot-splash">
+  <div class="boot-line">⟨ SYSTEM ⟩</div>
+  <div class="boot-line boot-main">GENERATOR INITIALIZING</div>
+  <div class="boot-line boot-sub">LOADING SHADOW ARCHIVE...</div>
+</div>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">⟡</span>
+    <div class="brand-text">
+      <h1>SHADOW MONARCH</h1>
+      <p>SeenU Theme Generator</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button type="button" id="resetBtn" class="btn btn-ghost">Reset to defaults</button>
+    <button type="button" id="clearSaveBtn" class="btn btn-ghost">Clear saved data</button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ═══════════════════ FORM PANE ═══════════════════ -->
+  <section class="form-pane" aria-label="Theme configuration">
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ IDENTITY</legend>
+      <div class="field-grid">
+        <label class="field">
+          <span>Display name</span>
+          <input type="text" id="f-name" maxlength="40" placeholder="e.g. UltPanda">
+        </label>
+        <label class="field">
+          <span>Title</span>
+          <input type="text" id="f-title" maxlength="40" placeholder="e.g. Shadow Monarch">
+        </label>
+        <label class="field">
+          <span>Class</span>
+          <input type="text" id="f-class" maxlength="40" placeholder="e.g. Necromancer">
+        </label>
+        <label class="field">
+          <span>Guild <em>(optional)</em></span>
+          <input type="text" id="f-guild" maxlength="40" placeholder="e.g. OPC">
+        </label>
+        <label class="field">
+          <span>Level</span>
+          <input type="text" id="f-level" maxlength="20" placeholder="e.g. MAX">
+        </label>
+      </div>
+      <label class="field-inline">
+        <input type="checkbox" id="f-status-enabled">
+        <span>Show the STATUS window (built from the fields above)</span>
+      </label>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ RANK</legend>
+      <label class="field-inline">
+        <input type="checkbox" id="f-gate-enabled">
+        <span>Ring my profile picture with a spinning gate + rank tag</span>
+      </label>
+      <div class="field-grid">
+        <label class="field">
+          <span>Rank text</span>
+          <input type="text" id="f-rank-text" maxlength="20" placeholder="e.g. S-RANK">
+        </label>
+      </div>
+      <div class="calibration-note">
+        <strong>Heads up:</strong> the gate's position is pinned with pixel offsets
+        (below, under ⟡ POSITIONING) because every profile layout places the avatar
+        slightly differently. Expect one calibration pass after you paste this in.
+      </div>
+      <div class="field-grid">
+        <label class="field">
+          <span>Vertical offset (px)</span>
+          <input type="number" id="f-gate-top" step="1">
+        </label>
+        <label class="field">
+          <span>Horizontal offset (px)</span>
+          <input type="number" id="f-gate-left" step="1">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ SYSTEM MESSAGE</legend>
+      <label class="field-inline">
+        <input type="checkbox" id="f-splash-enabled">
+        <span>Show a full-page System splash on load</span>
+      </label>
+      <div class="field-grid">
+        <label class="field">
+          <span>Eyebrow line</span>
+          <input type="text" id="f-splash-1" maxlength="30">
+        </label>
+        <label class="field">
+          <span>Main line</span>
+          <input type="text" id="f-splash-2" maxlength="40">
+        </label>
+        <label class="field">
+          <span>Sub line</span>
+          <input type="text" id="f-splash-3" maxlength="40">
+        </label>
+      </div>
+      <label class="field-inline">
+        <input type="checkbox" id="f-splash-once">
+        <span>Try to play only once per browser session <em>(experimental — needs a
+        &lt;script&gt; tag, which some sites strip. If it doesn't survive, the splash
+        just plays quickly every time instead, so it's safe to leave on.)</em></span>
+      </label>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ MONARCH RECORD</legend>
+      <label class="field-inline">
+        <input type="checkbox" id="f-record-enabled">
+        <span>Show a floating stat-counter window</span>
+      </label>
+      <div id="record-rows" class="row-editor"></div>
+      <button type="button" id="record-add" class="btn btn-small">+ Add row</button>
+      <div class="calibration-note">
+        This window floats using pixel offsets — same deal as the gate. Fine-tune
+        under ⟡ POSITIONING once you see it on your real page.
+      </div>
+      <div class="field-grid">
+        <label class="field">
+          <span>Vertical offset (px)</span>
+          <input type="number" id="f-record-top" step="1">
+        </label>
+        <label class="field">
+          <span>Horizontal offset (px)</span>
+          <input type="number" id="f-record-left" step="1">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ DAILY QUEST</legend>
+      <label class="field-inline">
+        <input type="checkbox" id="f-quest-enabled">
+        <span>Show a daily quest checklist window</span>
+      </label>
+      <label class="field">
+        <span>Subtitle</span>
+        <input type="text" id="f-quest-subtitle" maxlength="50">
+      </label>
+      <div id="quest-rows" class="row-editor"></div>
+      <button type="button" id="quest-add" class="btn btn-small">+ Add quest</button>
+      <label class="field-inline">
+        <input type="checkbox" id="f-quest-warning-enabled">
+        <span>Show the penalty warning line</span>
+      </label>
+      <label class="field">
+        <span>Warning text</span>
+        <input type="text" id="f-quest-warning" maxlength="60">
+      </label>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ COLORS</legend>
+      <div class="color-grid">
+        <label class="color-field">
+          <span>Primary (System)</span>
+          <div class="swatch-row">
+            <input type="color" id="f-color-primary">
+            <input type="text" id="f-color-primary-hex" class="hex-input" maxlength="7">
+          </div>
+        </label>
+        <label class="color-field">
+          <span>Secondary (Monarch)</span>
+          <div class="swatch-row">
+            <input type="color" id="f-color-secondary">
+            <input type="text" id="f-color-secondary-hex" class="hex-input" maxlength="7">
+          </div>
+        </label>
+        <label class="color-field">
+          <span>Accent (Rank)</span>
+          <div class="swatch-row">
+            <input type="color" id="f-color-accent">
+            <input type="text" id="f-color-accent-hex" class="hex-input" maxlength="7">
+          </div>
+        </label>
+        <label class="color-field">
+          <span>Void (background)</span>
+          <div class="swatch-row">
+            <input type="color" id="f-color-bg">
+            <input type="text" id="f-color-bg-hex" class="hex-input" maxlength="7">
+          </div>
+        </label>
+      </div>
+      <label class="field">
+        <span>Background image URL <em>(optional — host your own; hotlinks rot)</em></span>
+        <input type="url" id="f-bg-image" placeholder="https://...">
+      </label>
+    </fieldset>
+
+    <fieldset class="panel">
+      <legend class="panel-title">⟡ EFFECTS</legend>
+      <div class="toggle-grid">
+        <label class="field-inline"><input type="checkbox" id="f-fx-scanlines"><span>CRT scanlines</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-grain"><span>Film grain</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-glitch"><span>Name glitch flicker</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-shimmer"><span>Card title shimmer sweep</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-hover"><span>Card power-up on hover</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-notch"><span>Notched window corners</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-scrollbar"><span>Themed scrollbar</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-cursor"><span>Custom flame cursor</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-postgrad"><span>Gradient post-author names</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-stats"><span>Themed stats numbers</span></label>
+        <label class="field-inline"><input type="checkbox" id="f-fx-platform"><span>SeenU quirk fixes <em>(tape tabs, iSeen monitor — harmless elsewhere)</em></span></label>
+      </div>
+    </fieldset>
+
+  </section>
+
+  <!-- ═══════════════════ PREVIEW + OUTPUT PANE ═══════════════════ -->
+  <aside class="preview-pane" aria-label="Live preview and generated code">
+
+    <div class="panel preview-panel">
+      <div class="panel-title-row">
+        <span class="panel-title">⟡ LIVE PREVIEW</span>
+        <button type="button" id="replaySplash" class="btn btn-small">▶ Replay splash</button>
+      </div>
+      <p class="preview-note">
+        Built from SeenU's real element classes, so this is a close approximation —
+        not pixel-identical to your live page (fonts, exact card widths, and
+        floating-window offsets will vary slightly).
+      </p>
+
+      <div class="preview-frame">
+        <div class="seenu-profile-root" id="previewRoot">
+
+          <div class="mock-header">
+            <div class="mock-avatar-wrap" id="mockAvatarWrap">
+              <img class="mock-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%23222b4a'/%3E%3Ccircle cx='60' cy='46' r='24' fill='%23445' /%3E%3Cellipse cx='60' cy='108' rx='40' ry='30' fill='%23445'/%3E%3C/svg%3E" alt="">
+              <div class="gateSigil" id="mockGate">
+                <div class="ringOuter"></div>
+                <div class="ringInner"></div>
+                <div class="rankTag" id="mockRank">S-RANK</div>
+              </div>
+            </div>
+            <div class="mock-header-text">
+              <h1 class="seenu-name" id="mockName">YOUR NAME</h1>
+              <p class="mock-handle">@handle</p>
+            </div>
+            <div class="statusWindow monarchRecord" id="mockRecord">
+              <div class="swTitle">⟡ MONARCH RECORD</div>
+              <div id="mockRecordRows"></div>
+            </div>
+          </div>
+
+          <div class="mock-cards">
+            <div class="statusWindow" id="mockStatusCard">
+              <div class="swTitle">⟡ STATUS</div>
+              <div id="mockStatusRows"></div>
+            </div>
+
+            <div class="questWindow" id="mockQuestCardWrap">
+              <div class="qwTitle">⟡ DAILY QUEST</div>
+              <div class="qwSub" id="mockQuestSub"></div>
+              <div id="mockQuestRows"></div>
+              <div class="qwWarn" id="mockQuestWarn"></div>
+            </div>
+
+            <section class="seenu-card" id="mockSampleCard">
+              <div class="seenu-card-title">SAMPLE CARD</div>
+              <div class="seenu-card-body">
+                This represents a real platform card (like "About Me") after retheming.
+                Hover it to see the power-up effect.
+              </div>
+            </section>
+
+            <article class="bg-surface mock-post">
+              <div class="mock-post-head">
+                <span class="font-bold mock-post-author">Sample User</span>
+                <span class="mock-post-meta">· just now</span>
+              </div>
+              <p>Testing out my new profile theme — thoughts?</p>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="panel output-panel">
+      <div class="panel-title-row">
+        <span class="panel-title">⟡ OUTPUT</span>
+        <span id="charCount" class="char-count">0 / 20,000</span>
+      </div>
+      <textarea id="output" class="output-box" readonly spellcheck="false"></textarea>
+      <div class="output-actions">
+        <button type="button" id="copyBtn" class="btn btn-primary">Copy code</button>
+        <button type="button" id="downloadBtn" class="btn btn-ghost">Download .html</button>
+      </div>
+      <p class="output-hint">
+        Paste this into your SeenU layout code box and save. If it ever breaks
+        the page, clear the box and save — your normal theme comes right back.
+      </p>
+    </div>
+
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>
+    Built for <a href="https://seenu.io" target="_blank" rel="noopener">SeenU</a> profiles.
+    Not affiliated with SeenU or the Solo Leveling franchise — a fan-made styling tool.
+    Your settings autosave to this browser only; nothing is sent anywhere.
+  </p>
+</footer>
+
+<script src="generator.js"></script>
+</body>
+</html>
