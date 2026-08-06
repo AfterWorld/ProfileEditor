@@ -39,6 +39,19 @@ from outside the page. The generator ships with reasonable starting values,
 but **expect to nudge the offset fields once** after you see it live on your
 actual profile — that's normal, not a bug.
 
+### About the Layout & Avatar panel
+
+This section targets two things discovered by inspecting a real SeenU
+profile's rendered HTML: a `main` element that wraps the page content, and
+an avatar image with `alt="Name"`. Centering/constraining the page width and
+resizing the avatar both key off these. They should generalize across SeenU
+profiles since it's one shared platform, but if your page's structure
+differs, right-click the element in question → Inspect → check its actual
+tag/class/alt text, and adjust the selectors in `generator.js`
+(`blockLayout` / `blockAvatarForce`) accordingly. The gate ring size is
+automatically derived from the avatar-size field, so they stay proportional
+without needing to be tuned separately.
+
 ### About "once per session" splash
 
 The checkbox that limits the intro splash to once per browser session works

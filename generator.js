@@ -26,6 +26,11 @@ function lighten(hex, amt) {
   return '#' + [mix(r), mix(g), mix(b)].map(v => v.toString(16).padStart(2, '0')).join('');
 }
 function isValidHex(v) { return /^#[0-9a-fA-F]{6}$/.test(v); }
+function clampInt(v, min, max, fallback) {
+  const n = parseInt(v, 10);
+  if (Number.isNaN(n)) return fallback;
+  return Math.max(min, Math.min(max, n));
+}
 function esc(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -35,6 +40,7 @@ function uid() { return 'r' + Math.random().toString(36).slice(2, 9); }
 function defaultState() {
   return {
     identity: { name: 'YOUR NAME', title: 'Shadow Monarch', cls: 'Necromancer', guild: '', level: 'MAX' },
+    layout: { center: true, maxWidth: 920, avatarSize: 160, avatarForce: true },
     rank: { enabled: true, text: 'S-RANK', top: 13, left: -12 },
     splash: { enabled: true, line1: '⟨ SYSTEM ⟩', line2: 'PLAYER HAS LOGGED IN.', line3: 'WELCOME BACK, MONARCH', once: true },
     record: {
@@ -78,6 +84,7 @@ function loadState() {
     const d = defaultState();
     return {
       identity: { ...d.identity, ...saved.identity },
+      layout: { ...d.layout, ...saved.layout },
       rank: { ...d.rank, ...saved.rank },
       splash: { ...d.splash, ...saved.splash },
       record: { ...d.record, ...saved.record, rows: saved.record?.rows?.length ? saved.record.rows : d.record.rows },
@@ -184,6 +191,40 @@ function blockSplashCss(s) {
   100% { opacity: 0; height: 0; visibility: hidden; display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .sysSplash { display: none; } }`;
+}
+
+function blockLayout(s) {
+  if (!s.layout.center) return '';
+  return `
+main {
+  width: min(${s.layout.maxWidth}px, 94vw) !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+*:has(img[alt="Name"]) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+main > * { margin-left: auto !important; margin-right: auto !important; }`;
+}
+
+function blockAvatarForce(s) {
+  if (!s.layout.avatarForce) return '';
+  return `
+img[alt="Name"] {
+  width: ${s.layout.avatarSize}px !important;
+  height: ${s.layout.avatarSize}px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin: 20px auto !important;
+  box-shadow: 0 0 15px ${rgba(s.colors.secondary, 0.7)}, 0 0 30px ${rgba(s.colors.primary, 0.4)} !important;
+}`;
 }
 
 function blockCards(s) {
@@ -330,6 +371,10 @@ function notchClip(px) {
 
 function blockGate(s) {
   if (!s.rank.enabled) return '';
+  const aSize = s.layout.avatarSize;
+  const boxSize = aSize + 50;
+  const outerSize = aSize + 28;
+  const innerSize = aSize + 14;
   return `
 @keyframes gateSpin { 100% { transform: rotate(360deg); } }
 @keyframes gateSpinRev { 100% { transform: rotate(-360deg); } }
@@ -337,7 +382,7 @@ function blockGate(s) {
   position: absolute;
   top: ${s.rank.top}px;
   left: ${s.rank.left}px;
-  width: 170px; height: 170px;
+  width: ${boxSize}px; height: ${boxSize}px;
   display: flex; justify-content: center; align-items: center;
   pointer-events: none;
   z-index: 15;
@@ -347,9 +392,9 @@ function blockGate(s) {
   border: 2px dashed ${s.colors.primary};
   box-shadow: 0 0 15px ${rgba(s.colors.primary, 0.7)}, inset 0 0 15px ${rgba(s.colors.primary, 0.4)};
 }
-.gateSigil .ringOuter { width: 148px; height: 148px; animation: gateSpin 12s linear infinite; }
+.gateSigil .ringOuter { width: ${outerSize}px; height: ${outerSize}px; animation: gateSpin 12s linear infinite; }
 .gateSigil .ringInner {
-  width: 134px; height: 134px; border-style: dotted; border-color: ${s.colors.secondary};
+  width: ${innerSize}px; height: ${innerSize}px; border-style: dotted; border-color: ${s.colors.secondary};
   box-shadow: 0 0 15px ${rgba(s.colors.secondary, 0.7)}, inset 0 0 15px ${rgba(s.colors.secondary, 0.4)};
   animation: gateSpinRev 8s linear infinite;
 }
@@ -588,6 +633,8 @@ function assembleCss(s) {
     blockFonts(),
     blockBackground(s),
     blockAtmosphere(s),
+    blockLayout(s),
+    blockAvatarForce(s),
     blockSplashCss(s),
     blockCards(s),
     blockName(s),
@@ -684,6 +731,8 @@ const $ = id => document.getElementById(id);
 const els = {
   name: $('f-name'), title: $('f-title'), cls: $('f-class'), guild: $('f-guild'), level: $('f-level'),
   statusEnabled: $('f-status-enabled'),
+  layoutCenter: $('f-layout-center'), layoutMaxWidth: $('f-layout-maxwidth'),
+  avatarSize: $('f-avatar-size'), avatarForce: $('f-avatar-force'),
   gateEnabled: $('f-gate-enabled'), rankText: $('f-rank-text'), gateTop: $('f-gate-top'), gateLeft: $('f-gate-left'),
   splashEnabled: $('f-splash-enabled'), splash1: $('f-splash-1'), splash2: $('f-splash-2'), splash3: $('f-splash-3'), splashOnce: $('f-splash-once'),
   recordEnabled: $('f-record-enabled'), recordRows: $('record-rows'), recordAdd: $('record-add'), recordTop: $('f-record-top'), recordLeft: $('f-record-left'),
@@ -701,6 +750,7 @@ const els = {
   copyBtn: $('copyBtn'), downloadBtn: $('downloadBtn'), resetBtn: $('resetBtn'), clearSaveBtn: $('clearSaveBtn'),
   replaySplash: $('replaySplash'),
   previewRoot: $('previewRoot'),
+  mockAvatarWrap: $('mockAvatarWrap'),
   mockGate: $('mockGate'), mockRank: $('mockRank'),
   mockName: $('mockName'),
   mockRecord: $('mockRecord'), mockRecordRows: $('mockRecordRows'),
@@ -723,6 +773,11 @@ function syncFormFromState() {
   els.guild.value = state.identity.guild;
   els.level.value = state.identity.level;
   els.statusEnabled.checked = state.status.enabled;
+
+  els.layoutCenter.checked = state.layout.center;
+  els.layoutMaxWidth.value = state.layout.maxWidth;
+  els.avatarSize.value = state.layout.avatarSize;
+  els.avatarForce.checked = state.layout.avatarForce;
 
   els.gateEnabled.checked = state.rank.enabled;
   els.rankText.value = state.rank.text;
@@ -774,6 +829,11 @@ function readFormIntoState() {
   state.identity.level = els.level.value;
   state.status.enabled = els.statusEnabled.checked;
 
+  state.layout.center = els.layoutCenter.checked;
+  state.layout.maxWidth = clampInt(els.layoutMaxWidth.value, 400, 1600, 920);
+  state.layout.avatarSize = clampInt(els.avatarSize.value, 40, 400, 160);
+  state.layout.avatarForce = els.avatarForce.checked;
+
   state.rank.enabled = els.gateEnabled.checked;
   state.rank.text = els.rankText.value || 'S-RANK';
   state.rank.top = parseInt(els.gateTop.value, 10) || 0;
@@ -811,6 +871,10 @@ function readFormIntoState() {
 
 /* ---------------- Preview + output render ---------------- */
 function renderPreview() {
+  const aSize = state.layout.avatarSize;
+  els.mockAvatarWrap.style.width = aSize + 'px';
+  els.mockAvatarWrap.style.height = aSize + 'px';
+
   els.mockGate.style.display = state.rank.enabled ? '' : 'none';
   els.mockRank.textContent = state.rank.text || 'S-RANK';
 
@@ -885,6 +949,7 @@ function wireColorPair(colorInput, hexInput, key) {
 /* ---------------- Wire up events ---------------- */
 function wireEvents() {
   [els.name, els.title, els.cls, els.guild, els.level,
+   els.layoutMaxWidth, els.avatarSize,
    els.rankText, els.gateTop, els.gateLeft,
    els.splash1, els.splash2, els.splash3,
    els.recordTop, els.recordLeft,
@@ -892,7 +957,7 @@ function wireEvents() {
    els.bgImage
   ].forEach(el => el.addEventListener('input', onAnyChange));
 
-  [els.statusEnabled, els.gateEnabled, els.splashEnabled, els.splashOnce,
+  [els.statusEnabled, els.layoutCenter, els.avatarForce, els.gateEnabled, els.splashEnabled, els.splashOnce,
    els.recordEnabled, els.questEnabled, els.questWarnEnabled,
    els.fxScanlines, els.fxGrain, els.fxGlitch, els.fxShimmer, els.fxHover,
    els.fxNotch, els.fxScrollbar, els.fxCursor, els.fxPostgrad, els.fxStats, els.fxPlatform

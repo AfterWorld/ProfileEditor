@@ -66,6 +66,33 @@
     </fieldset>
 
     <fieldset class="panel">
+      <legend class="panel-title">⟡ LAYOUT &amp; AVATAR</legend>
+      <label class="field-inline">
+        <input type="checkbox" id="f-layout-center">
+        <span>Center &amp; constrain the page layout <em>(fixes profiles that
+        stretch edge-to-edge on wide screens)</em></span>
+      </label>
+      <label class="field">
+        <span>Max content width (px)</span>
+        <input type="number" id="f-layout-maxwidth" min="400" max="1600" step="10">
+      </label>
+      <label class="field">
+        <span>Avatar size (px) <em>— also sizes the gate rings around it</em></span>
+        <input type="number" id="f-avatar-size" min="40" max="400" step="5">
+      </label>
+      <label class="field-inline">
+        <input type="checkbox" id="f-avatar-force">
+        <span>Force the picture to this size + add a Monarch glow</span>
+      </label>
+      <div class="calibration-note">
+        This targets <code>img[alt="Name"]</code> — a selector spotted by
+        inspecting a real SeenU profile picture. It should generalize, but if
+        your page's avatar doesn't budge, right-click it → Inspect → check
+        its actual <code>alt</code> text or class and let me know.
+      </div>
+    </fieldset>
+
+    <fieldset class="panel">
       <legend class="panel-title">⟡ RANK</legend>
       <label class="field-inline">
         <input type="checkbox" id="f-gate-enabled">
@@ -244,7 +271,7 @@
 
           <div class="mock-header">
             <div class="mock-avatar-wrap" id="mockAvatarWrap">
-              <img class="mock-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%23222b4a'/%3E%3Ccircle cx='60' cy='46' r='24' fill='%23445' /%3E%3Cellipse cx='60' cy='108' rx='40' ry='30' fill='%23445'/%3E%3C/svg%3E" alt="">
+              <img class="mock-avatar" alt="Name" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%23222b4a'/%3E%3Ccircle cx='60' cy='46' r='24' fill='%23445' /%3E%3Cellipse cx='60' cy='108' rx='40' ry='30' fill='%23445'/%3E%3C/svg%3E">
               <div class="gateSigil" id="mockGate">
                 <div class="ringOuter"></div>
                 <div class="ringInner"></div>
