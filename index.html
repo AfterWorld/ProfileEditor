@@ -335,6 +335,7 @@ custom-HTML field. -->"></textarea>
     <div class="preview-bar">
       <span class="eye">👁</span>
       <div class="url">seenu.io/jordan_rivers</div>
+      <span class="state" title="Click any part of the preview to jump straight to editing its CSS">🖱 click to edit</span>
       <span class="state" id="renderState">rendered just now</span>
     </div>
     <iframe id="preview" title="SeenU profile preview"></iframe>
@@ -520,7 +521,7 @@ const BASE_HTML = `<div class="min-h-screen">
   </div>
   <div class="relative h-28 w-full"></div>
 
-  <div class="relative z-10 mx-auto w-full max-w-[1080px] px-4 pb-20">
+  <main class="relative z-10 mx-auto w-full max-w-[1080px] px-4 pb-20">
 
     <div class="-mt-12 mb-4 flex flex-wrap items-end gap-4">
       <span class="relative inline-flex items-center justify-center rounded-full bg-surface-2 text-muted" style="width:120px;height:120px;font-size:46px;">
@@ -705,7 +706,7 @@ const BASE_HTML = `<div class="min-h-screen">
 
       </div>
     </div>
-  </div>
+  </main>
 </div>
 </div>
 `;
@@ -960,21 +961,100 @@ document.querySelectorAll('.tab').forEach(tab=>{
   });
 });
 
+function scopeUserCss(css){
+  // Split into top-level statements by brace depth (handles nested @media fine as one block).
+  const stmts = [];
+  let depth = 0, start = 0;
+  for (let i = 0; i < css.length; i++){
+    const ch = css[i];
+    if (ch === '{') depth++;
+    else if (ch === '}'){
+      depth--;
+      if (depth === 0){ stmts.push(css.slice(start, i + 1)); start = i + 1; }
+    }
+  }
+  if (start < css.length) stmts.push(css.slice(start));
+
+  const unscoped = [];
+  const scoped = [];
+  for (const raw of stmts){
+    const stmt = raw.trim();
+    if (!stmt) continue;
+    // @import/@keyframes/@font-face/@media/@supports etc: leave completely untouched.
+    if (stmt.startsWith('@')){ unscoped.push(stmt); continue; }
+    const braceIdx = stmt.indexOf('{');
+    if (braceIdx === -1){ unscoped.push(stmt); continue; }
+    const selectors = stmt.slice(0, braceIdx).split(',').map(s => s.trim());
+    // body/html/:root rules stay global — that's how page-wide backgrounds/fonts are meant to work.
+    const touchesPageRoot = selectors.some(s => /^(body|html|:root)\b/.test(s));
+    (touchesPageRoot ? unscoped : scoped).push(stmt);
+  }
+
+  let out = unscoped.join('\n');
+  if (scoped.length){
+    out += (out ? '\n' : '') + '@scope (.seenu-profile-root) {\n' + scoped.join('\n') + '\n}';
+  }
+  return out;
+}
+
+function insertRuleForSelector(selector){
+  const current = cssInput.value;
+  const existingIdx = current.search(new RegExp('(^|\\s|,|\\})' + selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\{'));
+  if (existingIdx === -1){
+    const sep = current.trim() ? '\n\n' : '';
+    cssInput.value = current + `${sep}${selector} {\n  \n}\n`;
+    const braceOpen = cssInput.value.lastIndexOf('{');
+    const cursorPos = braceOpen + 3; // land inside "{\n  "
+    cssInput.focus();
+    cssInput.setSelectionRange(cursorPos, cursorPos);
+  } else {
+    cssInput.focus();
+    cssInput.setSelectionRange(existingIdx, existingIdx);
+  }
+  document.querySelector('.tab[data-tab="css"]').click();
+  renderState.textContent = 'editing ' + selector;
+  scheduleRender();
+}
+
+window.addEventListener('message', (e) => {
+  const data = e.data;
+  if (!data || !data.seenuPick) return;
+  insertRuleForSelector(data.selector);
+});
+
 function render(){
   const userCss = cssInput.value;
   const userHtml = htmlInput.value;
+  const scopedCss = scopeUserCss(userCss);
   const doc = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <base href="about:blank">
     <style>${BASE_CSS}</style>
-    <style id="user-css">${userCss}</style>
-  </head><body class="seenu-profile-root">
+    <style id="user-css">${scopedCss}</style>
+  </head><body>
     ${userHtml}
     ${BASE_HTML}
     <script>
       // Preview links are decorative only — never let them navigate this iframe.
+      // Clicking anything also picks a CSS selector for it and hands it back to the editor.
+      function seenuBestSelector(el){
+        if (!el || el.nodeType !== 1) return el.tagName ? el.tagName.toLowerCase() : '*';
+        if (el.id) return '#' + el.id;
+        var preferred = ['seenu-card-title','seenu-card-body','seenu-card','seenu-name','text-brand','bg-brand','coverflow-item'];
+        var cls = Array.prototype.slice.call(el.classList || []);
+        for (var i=0;i<preferred.length;i++){ if (cls.indexOf(preferred[i]) !== -1) return '.' + preferred[i]; }
+        if (el.tagName === 'ARTICLE' && cls.indexOf('bg-surface') !== -1) return 'article.bg-surface';
+        if (el.tagName === 'IMG' && cls.indexOf('rounded-full') !== -1) return 'img.rounded-full';
+        if (el.tagName === 'CODE') return 'code';
+        if (el.tagName === 'BUTTON') return 'button';
+        if (cls.length) return el.tagName.toLowerCase() + '.' + cls[0];
+        return el.tagName.toLowerCase();
+      }
       document.addEventListener('click', function(e){
-        var a = e.target && e.target.closest ? e.target.closest('a') : null;
-        if (a) e.preventDefault();
+        e.preventDefault();
+        var el = e.target;
+        if (!el || el === document.body || el === document.documentElement) return;
+        var selector = seenuBestSelector(el);
+        try { window.parent.postMessage({ seenuPick: true, selector: selector }, '*'); } catch(err){}
       }, true);
     <\/script>
   </body></html>`;
