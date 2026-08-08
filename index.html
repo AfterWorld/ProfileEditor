@@ -995,11 +995,19 @@ function render(){
   const handle = getHandle();
   const baseHtml = BASE_HTML.split('__HANDLE__').join(handle);
   const doc = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <base href="about:blank">
     <style>${BASE_CSS}</style>
     <style id="user-css">${userCss}</style>
   </head><body class="seenu-profile-root">
     ${userHtml}
     ${baseHtml}
+    <script>
+      // Preview links are decorative only — never let them navigate this iframe.
+      document.addEventListener('click', function(e){
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (a) e.preventDefault();
+      }, true);
+    <\/script>
   </body></html>`;
   iframe.srcdoc = doc;
   cssCount.textContent = userCss.length;
