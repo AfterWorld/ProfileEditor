@@ -347,217 +347,367 @@ custom-HTML field. -->"></textarea>
    theme CSS written against .seenu-card, .seenu-name, article.bg-surface,
    img[alt="Name"], etc. applies exactly like it would on the live site.
    ============================================================ */
-const BASE_CSS = `
-:root{
-  --brand:#ff4fa3; --surface:#0b0b0e; --surface2:#141418; --surface3:#1c1c22;
-  --line:#232329; --muted:#8a8a93; --faint:#5a5a63; --ink:#000;
-}
-*{box-sizing:border-box;}
-body{margin:0;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-.seenu-profile-root{min-height:100vh;padding-bottom:40px;}
-main{width:min(920px,94vw);margin:0 auto;padding-top:28px;}
-a{color:var(--brand);text-decoration:none;}
-a:hover{text-decoration:underline;}
-button{font-family:inherit;cursor:pointer;background:var(--surface2);color:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;}
-button:hover{background:var(--surface3);}
-code{background:rgba(255,255,255,.08);padding:4px 8px;border-radius:8px;font-size:13px;}
-textarea{font-family:inherit;background:var(--surface2);color:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;width:100%;}
-h2.uppercase{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+const BASE_CSS = `*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}
+:after,:before{--tw-content:""}
+html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+body{margin:0;line-height:inherit}
+hr{height:0;color:inherit;border-top-width:1px}
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}
+a{color:inherit;text-decoration:inherit}
+b,strong{font-weight:bolder}
+button,input,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}
+button,select{text-transform:none}
+button{-webkit-appearance:button;background-color:transparent;background-image:none}
+img,video{max-width:100%;height:auto}
+[hidden]{display:none}
+button{cursor:pointer}
+:disabled{cursor:default}
+img,svg,video{display:block;vertical-align:middle}
 
-/* header */
-.profile-header{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:22px;}
-img.rounded-full{width:150px;height:150px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 20px rgba(255,255,255,.35);}
-.seenu-name{font-size:26px;font-weight:800;margin:14px 0 2px;}
-.profile-header p{margin:0;color:var(--muted);}
+/* ---- layout / flex / grid ---- */
+.pointer-events-none{pointer-events:none}
+.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}
+.inset-0{inset:0}
+.top-0{top:0}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.z-40{z-index:40}.z-\\[1\\]{z-index:1}
+.-mt-12{margin-top:-3rem}.mb-4{margin-bottom:1rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-1{margin-bottom:.25rem}
+.mt-4{margin-top:1rem}.mt-3{margin-top:.75rem}.mt-1{margin-top:.25rem}.mt-1\\.5{margin-top:.375rem}.mt-2{margin-top:.5rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.pb-1{padding-bottom:.25rem}.pb-20{padding-bottom:5rem}
+.px-4{padding-left:1rem;padding-right:1rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\\.5{padding-left:.875rem;padding-right:.875rem}
+.py-1\\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\\.5{padding-top:.625rem;padding-bottom:.625rem}
+.p-0{padding:0}.p-3{padding:.75rem}.p-4{padding:1rem}
+.h-14{height:3.5rem}.h-28{height:7rem}.h-full{height:100%}.h-9{height:2.25rem}
+.w-full{width:100%}.w-9{width:2.25rem}
+.min-w-0{min-width:0}
+.max-w-\\[1080px\\]{max-width:1080px}.max-w-\\[1100px\\]{max-width:1100px}.max-w-md{max-width:28rem}
+.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.block{display:block}.hidden{display:none}
+.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}
+.items-center{align-items:center}.items-end{align-items:flex-end}.items-start{align-items:flex-start}
+.justify-center{justify-content:center}.justify-between{justify-content:space-between}
+.gap-1{gap:.25rem}.gap-1\\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}
+.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}
+.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
+.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:1024px){.lg\\:grid-cols-\\[330px_minmax\\(0\\2c 1fr\\)\\]{grid-template-columns:330px minmax(0,1fr)}}
 
-/* grid */
-.grid-layout{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start;}
-@media (max-width:700px){.grid-layout{grid-template-columns:1fr;}}
-.col-left,.col-right{display:flex;flex-direction:column;gap:16px;min-width:0;}
+/* ---- borders / radius / shadow ---- */
+.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-2xl{border-radius:1rem}.rounded-t-md{border-top-left-radius:.375rem;border-top-right-radius:.375rem}
+.border{border-width:1px}.border-b{border-bottom-width:1px}
+.overflow-hidden{overflow:hidden}
+.shadow-card{box-shadow:0 1px 0 hsla(0,0%,100%,.03),0 8px 30px rgba(0,0,0,.5)}
 
-/* cards */
-.seenu-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.5);}
-.seenu-card-title{background:var(--surface2);padding:10px 14px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
-.seenu-card-body{background:var(--surface);padding:14px;font-size:14px;line-height:1.5;}
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 14px;}
-.stat-grid > div{display:flex;flex-direction:column;gap:2px;}
-.stat-grid b{display:block;font-size:19px;font-weight:800;line-height:1.15;}
-.stat-grid span{font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;line-height:1;}
-.chip-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.action-col{display:flex;flex-direction:column;gap:8px;}
-.action-col button{width:100%;}
-.chip{display:inline-flex;align-items:center;height:26px;border:1px solid var(--line);border-radius:999px;padding:0 12px;font-size:13px;line-height:1;}
+/* ---- text / typography ---- */
+.text-\\[9px\\]{font-size:9px}.text-\\[10px\\]{font-size:10px}.text-\\[11px\\]{font-size:11px}.text-\\[12px\\]{font-size:12px}
+.text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-base{font-size:1rem;line-height:1.5rem}
+.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.text-3xl{font-size:1.875rem}
+.font-semibold{font-weight:600}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-black{font-weight:900}
+.uppercase{text-transform:uppercase}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tracking-wide{letter-spacing:.025em}.leading-none{line-height:1}.leading-tight{line-height:1.25}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}
+.whitespace-pre-wrap{white-space:pre-wrap}.break-words{overflow-wrap:break-word}
+.text-left{text-align:left}.text-center{text-align:center}
 
-/* top 5 */
-.top5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-@media (max-width:700px){ .top5{grid-template-columns:repeat(5,minmax(52px,1fr));} }
-.top5 a{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:#fff;font-size:11px;font-weight:700;line-height:1.2;}
-.top5 img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+/* ---- misc ---- */
+.object-cover{object-fit:cover}.object-contain{object-fit:contain}
+.cursor-pointer{cursor:pointer}.cursor-zoom-in{cursor:zoom-in}
+.select-none{user-select:none}
+.backdrop-blur{backdrop-filter:blur(8px)}
+.transition{transition-property:color,background-color,border-color,box-shadow,transform,filter;transition-duration:.15s}
+.hover\\:underline:hover{text-decoration:underline}
+.hover\\:opacity-85:hover{opacity:.85}
+.hover\\:scale-105:hover{transform:scale(1.05)}
+.disabled\\:opacity-40:disabled{opacity:.4}
+.aspect-square{aspect-ratio:1/1}.aspect-video{aspect-ratio:16/9}
+.opacity-60{opacity:.6}.opacity-70{opacity:.7}
 
-/* music */
-.music-player{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.03);margin-bottom:18px;}
-.music-player img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0;}
-.music-meta{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.music-meta b{display:flex;align-items:center;gap:6px;font-size:14px;line-height:1.2;}
-.music-meta span{font-size:12px;color:var(--muted);line-height:1.2;}
-.note-icon{display:inline-flex;align-items:center;font-size:16px;color:var(--brand);line-height:1;}
+/* ---- opacity color utilities used throughout ---- */
+.bg-black\\/30{background-color:rgba(0,0,0,.3)}.bg-black\\/35{background-color:rgba(0,0,0,.35)}.bg-black\\/40{background-color:rgba(0,0,0,.4)}
+.bg-white\\/10{background-color:hsla(0,0%,100%,.1)}.bg-white\\/15{background-color:hsla(0,0%,100%,.15)}
+.text-white{color:#fff}.text-white\\/85{color:hsla(0,0%,100%,.85)}
+.from-black\\/35{--tw-gradient-from:rgba(0,0,0,.35)}
+.bg-gradient-to-b{background-image:linear-gradient(to bottom,var(--tw-gradient-stops))}
 
-/* posts */
-article.bg-surface{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px;}
-article.bg-surface + article.bg-surface{margin-top:0;}
-article.bg-surface header{display:flex;align-items:center;gap:10px;padding:14px 14px 0;}
-article.bg-surface header img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;}
-article.bg-surface header > div{display:flex;flex-direction:column;gap:2px;min-width:0;}
-article.bg-surface .author{font-weight:700;font-size:14px;line-height:1.2;}
-article.bg-surface .meta{font-size:11px;color:var(--faint);line-height:1.2;}
-article.bg-surface .body{padding:10px 14px;font-size:14px;line-height:1.5;color:#ececec;}
-article.bg-surface footer{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);}
-article.bg-surface footer button{display:flex;align-items:center;justify-content:center;background:transparent;border:0;border-left:1px solid var(--line);border-radius:0;color:var(--muted);font-weight:600;font-size:12px;padding:9px 4px;height:38px;}
-article.bg-surface footer button:first-child{border-left:0;}
-article.bg-surface footer button:hover{background:var(--surface2);}
+/* ============================================================
+   SEENU CUSTOM DESIGN SYSTEM (non-tailwind, site-specific)
+   ============================================================ */
+:root{color-scheme:dark}
+body,html{height:100%}
+body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#232329;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#2e2e36}
+::-webkit-scrollbar-track{background:transparent}
 
-/* comments */
-.comment{display:flex;align-items:flex-start;gap:10px;margin-top:14px;}
-.comment img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;}
-.comment .bubble{flex:1;background:var(--surface2);border-radius:14px;padding:8px 12px;font-size:13px;line-height:1.4;}
-.comment .bubble b{display:block;font-size:12.5px;margin-bottom:2px;line-height:1.2;}
+.bg-surface{background-color:#0b0b0e}
+.bg-surface-2{background-color:#141418}
+.bg-surface-3{background-color:#1c1c22}
+.text-muted{color:#8a8a93}
+.text-faint{color:#5a5a63}
+.border-line{border-color:#232329}
+.text-brand{color:#ff4fa3}
+.bg-brand{background-color:#ff4fa3}
+.bg-brand-soft{background-color:rgba(255,79,163,.14)}
+.hover\\:bg-brand-dark:hover{background-color:#e23d8c}
+a{color:#ff4fa3;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* nav mascot */
+.seenu-nav{background:rgba(11,11,14,.85)}
+.seenu-mascot{will-change:transform;animation:seenuMascotBob 3.4s ease-in-out infinite}
+.seenu-arm{transform:rotate(8deg);animation:seenuArmWave 3.4s cubic-bezier(.34,1.56,.64,1) infinite}
+@keyframes seenuMascotBob{0%,to{transform:translateY(0)}50%{transform:translateY(-.6px)}}
+@keyframes seenuArmWave{0%{transform:rotate(8deg)}8%{transform:rotate(26deg)}16%{transform:rotate(4deg)}24%{transform:rotate(24deg)}32%{transform:rotate(6deg)}40%{transform:rotate(18deg)}47%,to{transform:rotate(8deg)}}
+
+/* seenu-card system (the real card chrome your presets target) */
+.seenu-card{background:rgba(11,11,14,.9);border-radius:.5rem;overflow:hidden}
+.seenu-card-title{padding:.625rem 1rem;font-size:12px;font-weight:700}
+.seenu-card-body{padding:.75rem}
+
+/* equalizer (song playing indicator) */
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:14px}
+.eq span{width:3px;background:currentColor;border-radius:2px;animation:eqBar .9s ease-in-out infinite}
+.eq span:first-child{animation-delay:-.2s}
+.eq span:nth-child(2){animation-delay:-.5s}
+.eq span:nth-child(3){animation-delay:-.1s}
+.eq span:nth-child(4){animation-delay:-.7s}
+@keyframes eqBar{0%,to{height:30%}50%{height:100%}}
+
+/* twinkling gif sparkle overlay */
+.gif-sparkle{position:absolute;pointer-events:none;animation:gifSparkle 4.5s ease-in-out infinite}
+@keyframes gifSparkle{0%,to{transform:translateY(2px) scale(.8) rotate(-35deg);opacity:.4}50%{transform:translateY(-10px) scale(1.18) rotate(35deg);opacity:1}}
+
+/* horizontal record-style playlist scroller */
+.coverflow{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 12px;scroll-snap-type:x mandatory}
+.coverflow::-webkit-scrollbar{height:6px}
+.coverflow-item{scroll-snap-align:center;flex:0 0 auto;transition:transform .2s}
+.coverflow-item:hover{transform:translateY(-4px) scale(1.04)}
+
+/* profile picture ring */
+img.rounded-full{box-shadow:0 0 0 2px #fff,0 0 20px rgba(255,255,255,.35)}
 `;
 
-const BASE_HTML = `
-<main>
-  <div class="profile-header">
-    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&h=300&fit=crop&crop=faces" alt="Name" class="rounded-full">
-    <h1 class="seenu-name">Jordan Rivers</h1>
-    <p>@jordan_rivers</p>
+const BASE_HTML = `<div class="min-h-screen">
+<header class="seenu-nav sticky top-0 z-40 border-b border-line backdrop-blur">
+  <div class="mx-auto flex h-14 w-full max-w-[1100px] items-center justify-between px-4">
+    <a class="shrink-0" href="#">
+      <span class="inline-flex flex-col leading-none">
+        <span class="inline-flex items-center gap-1.5">
+          <svg viewBox="0 0 40 40" class="seenu-mascot h-[1.15em] w-[1.15em] shrink-0 text-white" fill="currentColor" aria-hidden="true">
+            <circle cx="18.5" cy="11" r="7"></circle>
+            <path d="M8.6 39C8.6 26.8 12.4 22.4 18.5 22.4S28.4 26.8 28.4 39Z"></path>
+            <g class="seenu-arm" style="transform-box:view-box;transform-origin:25px 26px">
+              <path d="M24.8 26.2Q30.2 22 32 15.4" fill="none" stroke="currentColor" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="32.4" cy="14.4" r="3.15"></circle>
+            </g>
+          </svg>
+          <span class="font-extrabold tracking-tight text-white text-[22px]">SeenU</span>
+        </span>
+        <span class="mt-1 text-[10px] font-semibold italic tracking-tight text-white/80">Where real moments begin</span>
+      </span>
+    </a>
+    <a class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 pr-3.5 text-sm font-semibold text-white" href="#">
+      <span class="relative inline-flex items-center justify-center rounded-full bg-surface-2 text-muted" style="width:26px;height:26px;font-size:10px;">
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover" loading="lazy">
+      </span>My Page
+    </a>
   </div>
+</header>
 
-  <div class="grid-layout">
-    <div class="col-left">
-      <section class="seenu-card">
-        <div class="seenu-card-title">Say hi 👋</div>
-        <div class="seenu-card-body">
-          <div class="action-col">
-            <button>Friends</button>
-            <button>Message</button>
-            <button>Add to Top 5</button>
-          </div>
-        </div>
-      </section>
+<div class="seenu-profile-root relative min-h-full">
+  <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&h=900&fit=crop" alt="" class="h-full w-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/80"></div>
+  </div>
+  <div class="relative h-28 w-full"></div>
 
-      <section class="seenu-card">
-        <div class="seenu-card-title">SeenU URL</div>
-        <div class="seenu-card-body"><code>seenu.io/jordan_rivers</code></div>
-      </section>
+  <div class="relative z-10 mx-auto w-full max-w-[1080px] px-4 pb-20">
 
-      <section class="seenu-card">
-        <div class="seenu-card-title">Stats</div>
-        <div class="seenu-card-body">
-          <div class="stat-grid">
-            <div><b>42</b><span>Posts</span></div>
-            <div><b>316</b><span>Friends</span></div>
-            <div><b>🔥 88</b><span>Streaks</span></div>
-            <div><b>2,004</b><span>XP</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="seenu-card">
-        <div class="seenu-card-title">Details</div>
-        <div class="seenu-card-body">
-          <div class="chip-row">
-            <span class="chip">✨ main character</span>
-            <span class="chip">☀️ out and about</span>
-          </div>
-        </div>
-      </section>
+    <div class="-mt-12 mb-4 flex flex-wrap items-end gap-4">
+      <span class="relative inline-flex items-center justify-center rounded-full bg-surface-2 text-muted" style="width:120px;height:120px;font-size:46px;">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=faces" alt="Name" class="h-full w-full rounded-full object-cover" loading="lazy">
+      </span>
+      <div class="min-w-0 pb-1">
+        <h1 class="seenu-name flex flex-wrap items-center gap-2 text-3xl font-extrabold leading-tight text-white">
+          Jordan Rivers
+          <span class="inline-flex items-center" title="SeenU Verified">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.26-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.34 2.19c-1.39-.45-2.9-.2-3.91.81s-1.26 2.52-.81 3.91c-1.31.67-2.19 1.91-2.19 3.34s.88 2.67 2.19 3.34c-.45 1.39-.2 2.9.81 3.91s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.46 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34z" fill="#ff80b3"></path><path d="M8.2 12.2 10.9 14.9 15.9 9.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </span>
+          <span class="text-2xl leading-none" title="Flag">🇺🇸</span>
+        </h1>
+        <p class="text-white/85">@jordan_rivers</p>
+      </div>
     </div>
 
-    <div class="col-right">
-      <section class="seenu-card">
-        <div class="seenu-card-title">About me</div>
-        <div class="seenu-card-body">
-          <p>Just here vibing ✨ building silly little internet things and collecting Top 5 spots. Say hi!</p>
-        </div>
-      </section>
+    <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[330px_minmax(0,1fr)]">
+      <div class="flex min-w-0 flex-col gap-4">
 
-      <h2 class="uppercase">♫ Profile song</h2>
-      <div class="music-player">
-        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="">
-        <div class="music-meta">
-          <b><span class="note-icon">♪</span> Aktivated</b>
-          <span>Sada Baby</span>
-        </div>
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">Say hi 👋</div>
+          <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold" style="background:rgb(0,122,255);color:#fff;">Friends</button>
+              <a class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold text-white" href="#">Message</a>
+              <button class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold text-white">Add to Top 5</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">SeenU URL</div>
+          <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
+            <code class="rounded-lg px-2 py-1.5 text-sm" style="background:rgba(0,122,255,.12);">seenu.io/jordan_rivers</code>
+          </div>
+        </section>
+
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">Stats</div>
+          <div class="seenu-card-body p-4" style="background:#0b0b0e;color:#fff;">
+            <div class="grid grid-cols-2 gap-4">
+              <div><div class="text-xl font-extrabold">42</div><div class="text-xs uppercase tracking-wide" style="opacity:.6;">Posts</div></div>
+              <div><div class="text-xl font-extrabold">316</div><div class="text-xs uppercase tracking-wide" style="opacity:.6;">Friends</div></div>
+              <div><div class="text-xl font-extrabold text-brand">🔥 88</div><div class="text-xs uppercase tracking-wide" style="opacity:.6;">Streaks</div></div>
+              <div><div class="text-xl font-extrabold">2,004</div><div class="text-xs uppercase tracking-wide" style="opacity:.6;">XP</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">Details</div>
+          <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold" style="background:rgba(0,122,255,.133);color:#fff;border:1px solid rgb(0,122,255);">✨ main character</span>
+              <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold" style="background:rgba(0,122,255,.133);color:#fff;border:1px solid rgb(0,122,255);">☀️ out and about</span>
+            </div>
+          </div>
+        </section>
+
       </div>
 
-      <section class="seenu-card">
-        <div class="seenu-card-title">★ Top 5</div>
-        <div class="seenu-card-body">
-          <div class="top5">
-            <a href="#"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=faces" alt="">Sam K</a>
-            <a href="#"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=120&h=120&fit=crop&crop=faces" alt="">Angelo</a>
-            <a href="#"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&h=120&fit=crop&crop=faces" alt="">Moni</a>
-            <a href="#"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=faces" alt="">Toni</a>
-            <a href="#"><img src="https://images.unsplash.com/photo-1546456073-92b9f0a8d413?w=120&h=120&fit=crop&crop=faces" alt="">Shamar</a>
-          </div>
-        </div>
-      </section>
+      <div class="flex min-w-0 flex-col gap-4">
 
-      <section class="seenu-card">
-        <div class="seenu-card-title">Latest posts</div>
-        <div class="seenu-card-body">
-          <article class="bg-surface">
-            <header>
-              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" alt="">
-              <div>
-                <div class="author">Jordan Rivers</div>
-                <div class="meta">✨ main character · 4d</div>
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">About me</div>
+          <div class="seenu-card-body p-4" style="background:#0b0b0e;color:#fff;">
+            <p class="whitespace-pre-wrap leading-relaxed">Building silly little internet things and collecting Top 5 spots. Say hi!</p>
+          </div>
+        </section>
+
+        <section class="mt-5">
+          <h2 class="mb-3 text-xs font-bold uppercase tracking-wide" style="color:rgb(0,122,255);">♫ Profile song</h2>
+          <div class="flex items-center gap-3 rounded-2xl border border-line bg-black/30 p-3">
+            <button type="button" class="flex min-w-0 flex-1 items-center gap-3 text-left">
+              <span class="flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/40" style="width:64px;height:64px;">
+                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="" class="h-full w-full object-cover">
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2"><span class="eq" style="color:rgb(0,122,255);"><span></span><span></span><span></span><span></span></span><span class="truncate font-bold">Aktivated</span></div>
+                <div class="truncate text-sm text-muted">Sada Baby</div>
               </div>
-            </header>
-            <div class="body">Rebuilt my whole profile tonight, this theme thing is dangerously fun 😭✨</div>
-            <footer>
-              <button>♡ Like</button>
-              <button>💬 Comment</button>
-              <button>↻ Repost</button>
-              <button>↑ Share</button>
-            </footer>
-          </article>
+            </button>
+          </div>
+          <div class="mb-2 mt-4 text-xs font-bold uppercase tracking-wide text-faint">Playlist</div>
+          <div class="coverflow">
+            <div class="coverflow-item" style="width:112px;text-align:center;">
+              <button type="button" class="block w-full">
+                <span class="flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/40" style="width:112px;height:112px;">
+                  <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="" class="h-full w-full object-cover">
+                </span>
+                <div class="mt-1.5 truncate text-xs font-semibold">Aktivated</div>
+                <div class="truncate text-[11px] text-faint">Sada Baby</div>
+              </button>
+            </div>
+            <div class="coverflow-item" style="width:112px;text-align:center;">
+              <button type="button" class="block w-full">
+                <span class="flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/40" style="width:112px;height:112px;">
+                  <img src="https://images.unsplash.com/photo-1546456073-92b9f0a8d413?w=200&h=200&fit=crop" alt="" class="h-full w-full object-cover">
+                </span>
+                <div class="mt-1.5 truncate text-xs font-semibold">Snooze</div>
+                <div class="truncate text-[11px] text-faint">SZA</div>
+              </button>
+            </div>
+            <div class="coverflow-item" style="width:112px;text-align:center;">
+              <button type="button" class="block w-full">
+                <span class="flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/40" style="width:112px;height:112px;">
+                  <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop" alt="" class="h-full w-full object-cover">
+                </span>
+                <div class="mt-1.5 truncate text-xs font-semibold">Good Day</div>
+                <div class="truncate text-[11px] text-faint">Ice Cube</div>
+              </button>
+            </div>
+          </div>
+        </section>
 
-          <article class="bg-surface">
-            <header>
-              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" alt="">
-              <div>
-                <div class="author">Jordan Rivers</div>
-                <div class="meta">✨ main character · 2w</div>
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">★ Top 5</div>
+          <div class="seenu-card-body p-4" style="background:#0b0b0e;color:#fff;">
+            <div class="flex flex-wrap gap-4">
+              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Sam K</div></a>
+              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Angelo</div></a>
+              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Moni</div></a>
+            </div>
+          </div>
+        </section>
+
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">Latest posts</div>
+          <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
+            <article class="mb-4 overflow-hidden rounded-2xl border border-line bg-surface text-white shadow-card">
+              <header class="flex items-center gap-3 px-4 pt-4">
+                <a href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:42px;height:42px;"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 font-bold leading-tight"><a class="truncate text-white" href="#">Jordan Rivers</a></div>
+                  <div class="flex items-center gap-1 text-xs text-faint"><span>✨ main character</span><span>•</span><span>4d</span></div>
+                </div>
+              </header>
+              <div class="px-4 pt-3"><p class="whitespace-pre-wrap break-words leading-relaxed" style="color:#ececec;">Rebuilt my whole profile tonight, this theme thing is dangerously fun 😭✨</p></div>
+              <footer class="flex items-center gap-1 px-2 py-2 text-sm">
+                <button type="button" class="flex-1 rounded-lg px-3 py-2 font-semibold text-muted">♡ Like</button>
+                <button type="button" class="flex-1 rounded-lg px-3 py-2 font-semibold text-muted">💬 Comment</button>
+                <button type="button" class="flex-1 rounded-lg px-3 py-2 font-semibold text-muted">↻ Repost</button>
+              </footer>
+            </article>
+          </div>
+        </section>
+
+        <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
+          <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">💬 Comments</div>
+          <div class="seenu-card-body bg-surface">
+            <div class="flex gap-2.5">
+              <span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span>
+              <div class="min-w-0 flex-1 rounded-2xl border border-line bg-surface-2 px-3 py-2">
+                <textarea rows="1" placeholder="Leave a comment…" class="w-full resize-none bg-transparent text-sm text-white" style="border:0;outline:0;"></textarea>
               </div>
-            </header>
-            <div class="body">who else still customizing their page like it's 2006 lol</div>
-            <footer>
-              <button>♡ 13</button>
-              <button>💬 4</button>
-              <button>↻ Repost</button>
-              <button>↑ Share</button>
-            </footer>
-          </article>
-        </div>
-      </section>
+            </div>
+            <ul class="flex flex-col gap-3 mt-4">
+              <li class="flex gap-2.5">
+                <a class="shrink-0" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <div class="min-w-0 flex-1">
+                  <div class="rounded-2xl px-3 py-2 bg-surface-2" style="border-top-left-radius:2px;">
+                    <div class="flex items-center gap-1.5"><a class="text-sm font-bold text-white" href="#">Sam K</a></div>
+                    <p class="whitespace-pre-wrap break-words text-sm leading-snug" style="color:#ececec;">this theme is so real for you</p>
+                  </div>
+                  <div class="mt-1 flex items-center gap-3 text-xs text-faint"><span>1mo</span><button class="font-semibold">♡ 1</button><button class="font-semibold">Reply</button></div>
+                </div>
+              </li>
+              <li class="flex gap-2.5">
+                <a class="shrink-0" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <div class="min-w-0 flex-1">
+                  <div class="rounded-2xl px-3 py-2 bg-surface-2" style="border-top-left-radius:2px;">
+                    <div class="flex items-center gap-1.5"><a class="text-sm font-bold text-white" href="#">Angelo</a></div>
+                    <p class="whitespace-pre-wrap break-words text-sm leading-snug" style="color:#ececec;">okay the sparkle gif got me 😭</p>
+                  </div>
+                  <div class="mt-1 flex items-center gap-3 text-xs text-faint"><span>2mo</span><button class="font-semibold">♡</button><button class="font-semibold">Reply</button></div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
 
-      <section class="seenu-card">
-        <div class="seenu-card-title">💬 Comments</div>
-        <div class="seenu-card-body">
-          <textarea rows="2" placeholder="Leave a comment…"></textarea>
-          <div class="comment">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces" alt="">
-            <div class="bubble"><b>Sam K</b>this theme is so real for you</div>
-          </div>
-          <div class="comment">
-            <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=80&h=80&fit=crop&crop=faces" alt="">
-            <div class="bubble"><b>Angelo</b>okay the sparkle gif got me 😭</div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   </div>
-</main>
+</div>
+</div>
 `;
 
 /* ============================================================
