@@ -257,9 +257,29 @@
     background:#0d0d11;
     border:1px solid var(--line);
     border-radius:6px;
-    padding:0 10px;
+    padding:0 4px 0 10px;
     color:#9a9aa6;
+    gap:2px;
   }
+  .preview-bar .url .prefix{
+    color:#6b6b76;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .preview-bar .url input{
+    flex:1;
+    min-width:40px;
+    background:transparent;
+    border:0;
+    outline:0;
+    color:#e9e9ee;
+    font-family:var(--mono);
+    font-size:11px;
+    height:24px;
+    padding:0;
+  }
+  .preview-bar .url input::placeholder{ color:#4b4b56; }
+  .preview-bar .url:focus-within{ border-color:var(--pink); }
   .preview-bar .state{
     display:inline-flex;
     align-items:center;
@@ -334,7 +354,10 @@ custom-HTML field. -->"></textarea>
   <section class="preview-pane">
     <div class="preview-bar">
       <span class="eye">👁</span>
-      <div class="url">seenu.io/your_handle</div>
+      <div class="url">
+        <span class="prefix">seenu.io/</span>
+        <input id="handleInput" type="text" value="jordan_rivers" spellcheck="false" placeholder="your_handle">
+      </div>
       <span class="state" id="renderState">rendered just now</span>
     </div>
     <iframe id="preview" title="SeenU profile preview"></iframe>
@@ -534,7 +557,7 @@ const BASE_HTML = `<div class="min-h-screen">
           </span>
           <span class="text-2xl leading-none" title="Flag">🇺🇸</span>
         </h1>
-        <p class="text-white/85">@jordan_rivers</p>
+        <p class="text-white/85">@__HANDLE__</p>
       </div>
     </div>
 
@@ -555,7 +578,7 @@ const BASE_HTML = `<div class="min-h-screen">
         <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
           <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">SeenU URL</div>
           <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
-            <code class="rounded-lg px-2 py-1.5 text-sm" style="background:rgba(0,122,255,.12);">seenu.io/jordan_rivers</code>
+            <code class="rounded-lg px-2 py-1.5 text-sm" style="background:rgba(0,122,255,.12);">seenu.io/__HANDLE__</code>
           </div>
         </section>
 
@@ -949,6 +972,12 @@ const cssCount = document.getElementById('cssCount');
 const htmlCount = document.getElementById('htmlCount');
 const charInfo = document.getElementById('charInfo');
 const renderState = document.getElementById('renderState');
+const handleInput = document.getElementById('handleInput');
+
+function getHandle(){
+  const raw = handleInput.value.trim().replace(/^@/, '').replace(/\s+/g, '_');
+  return raw || 'your_handle';
+}
 
 // tabs
 document.querySelectorAll('.tab').forEach(tab=>{
@@ -963,12 +992,14 @@ document.querySelectorAll('.tab').forEach(tab=>{
 function render(){
   const userCss = cssInput.value;
   const userHtml = htmlInput.value;
+  const handle = getHandle();
+  const baseHtml = BASE_HTML.split('__HANDLE__').join(handle);
   const doc = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <style>${BASE_CSS}</style>
     <style id="user-css">${userCss}</style>
   </head><body class="seenu-profile-root">
     ${userHtml}
-    ${BASE_HTML}
+    ${baseHtml}
   </body></html>`;
   iframe.srcdoc = doc;
   cssCount.textContent = userCss.length;
@@ -985,6 +1016,7 @@ function scheduleRender(){
 }
 cssInput.addEventListener('input', scheduleRender);
 htmlInput.addEventListener('input', scheduleRender);
+handleInput.addEventListener('input', scheduleRender);
 
 document.getElementById('loadPresetBtn').addEventListener('click', ()=>{
   const key = document.getElementById('presetSelect').value;
