@@ -257,29 +257,9 @@
     background:#0d0d11;
     border:1px solid var(--line);
     border-radius:6px;
-    padding:0 4px 0 10px;
-    color:#9a9aa6;
-    gap:2px;
-  }
-  .preview-bar .url .prefix{
+    padding:0 10px;
     color:#6b6b76;
-    white-space:nowrap;
-    flex-shrink:0;
   }
-  .preview-bar .url input{
-    flex:1;
-    min-width:40px;
-    background:transparent;
-    border:0;
-    outline:0;
-    color:#e9e9ee;
-    font-family:var(--mono);
-    font-size:11px;
-    height:24px;
-    padding:0;
-  }
-  .preview-bar .url input::placeholder{ color:#4b4b56; }
-  .preview-bar .url:focus-within{ border-color:var(--pink); }
   .preview-bar .state{
     display:inline-flex;
     align-items:center;
@@ -354,10 +334,7 @@ custom-HTML field. -->"></textarea>
   <section class="preview-pane">
     <div class="preview-bar">
       <span class="eye">👁</span>
-      <div class="url">
-        <span class="prefix">seenu.io/</span>
-        <input id="handleInput" type="text" value="jordan_rivers" spellcheck="false" placeholder="your_handle">
-      </div>
+      <div class="url">seenu.io/jordan_rivers</div>
       <span class="state" id="renderState">rendered just now</span>
     </div>
     <iframe id="preview" title="SeenU profile preview"></iframe>
@@ -512,10 +489,10 @@ img.rounded-full{box-shadow:0 0 0 2px #fff,0 0 20px rgba(255,255,255,.35)}
 const BASE_HTML = `<div class="min-h-screen">
 <header class="seenu-nav sticky top-0 z-40 border-b border-line backdrop-blur">
   <div class="mx-auto flex h-14 w-full max-w-[1100px] items-center justify-between px-4">
-    <a class="shrink-0" href="#">
+    <span class="shrink-0">
       <span class="inline-flex flex-col leading-none">
         <span class="inline-flex items-center gap-1.5">
-          <svg viewBox="0 0 40 40" class="seenu-mascot h-[1.15em] w-[1.15em] shrink-0 text-white" fill="currentColor" aria-hidden="true">
+          <svg viewBox="0 0 40 40" class="seenu-mascot shrink-0 text-white" style="width:18px;height:18px;" fill="currentColor" aria-hidden="true">
             <circle cx="18.5" cy="11" r="7"></circle>
             <path d="M8.6 39C8.6 26.8 12.4 22.4 18.5 22.4S28.4 26.8 28.4 39Z"></path>
             <g class="seenu-arm" style="transform-box:view-box;transform-origin:25px 26px">
@@ -527,12 +504,12 @@ const BASE_HTML = `<div class="min-h-screen">
         </span>
         <span class="mt-1 text-[10px] font-semibold italic tracking-tight text-white/80">Where real moments begin</span>
       </span>
-    </a>
-    <a class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 pr-3.5 text-sm font-semibold text-white" href="#">
+    </span>
+    <span class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 pr-3.5 text-sm font-semibold text-white">
       <span class="relative inline-flex items-center justify-center rounded-full bg-surface-2 text-muted" style="width:26px;height:26px;font-size:10px;">
         <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover" loading="lazy">
       </span>My Page
-    </a>
+    </span>
   </div>
 </header>
 
@@ -557,7 +534,7 @@ const BASE_HTML = `<div class="min-h-screen">
           </span>
           <span class="text-2xl leading-none" title="Flag">🇺🇸</span>
         </h1>
-        <p class="text-white/85">@__HANDLE__</p>
+        <p class="text-white/85">@jordan_rivers</p>
       </div>
     </div>
 
@@ -569,7 +546,7 @@ const BASE_HTML = `<div class="min-h-screen">
           <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
             <div class="flex flex-wrap items-center gap-2.5">
               <button class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold" style="background:rgb(0,122,255);color:#fff;">Friends</button>
-              <a class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold text-white" href="#">Message</a>
+              <span class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold text-white">Message</span>
               <button class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold text-white">Add to Top 5</button>
             </div>
           </div>
@@ -578,7 +555,7 @@ const BASE_HTML = `<div class="min-h-screen">
         <section class="seenu-card overflow-hidden rounded-lg border" style="border-color:rgb(0,122,255);box-shadow:rgba(0,0,0,.3) 0 6px 18px;">
           <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">SeenU URL</div>
           <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
-            <code class="rounded-lg px-2 py-1.5 text-sm" style="background:rgba(0,122,255,.12);">seenu.io/__HANDLE__</code>
+            <code class="rounded-lg px-2 py-1.5 text-sm" style="background:rgba(0,122,255,.12);">seenu.io/jordan_rivers</code>
           </div>
         </section>
 
@@ -664,9 +641,9 @@ const BASE_HTML = `<div class="min-h-screen">
           <div class="seenu-card-title rounded-t-md" style="background:linear-gradient(rgb(0,122,255) 0%,rgba(0,122,255,.816) 46%,rgba(0,122,255,.69) 54%,rgb(0,122,255) 100%);color:#fff;">★ Top 5</div>
           <div class="seenu-card-body p-4" style="background:#0b0b0e;color:#fff;">
             <div class="flex flex-wrap gap-4">
-              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Sam K</div></a>
-              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Angelo</div></a>
-              <a class="relative select-none text-center" style="width:80px;" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Moni</div></a>
+              <span class="relative select-none text-center" style="width:80px;"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Sam K</div></span>
+              <span class="relative select-none text-center" style="width:80px;"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Angelo</div></span>
+              <span class="relative select-none text-center" style="width:80px;"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:64px;height:64px;"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&h=120&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span><div class="mt-1 text-xs font-semibold">Moni</div></span>
             </div>
           </div>
         </section>
@@ -676,9 +653,9 @@ const BASE_HTML = `<div class="min-h-screen">
           <div class="seenu-card-body" style="background:#0b0b0e;color:#fff;">
             <article class="mb-4 overflow-hidden rounded-2xl border border-line bg-surface text-white shadow-card">
               <header class="flex items-center gap-3 px-4 pt-4">
-                <a href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:42px;height:42px;"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <span><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:42px;height:42px;"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></span>
                 <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 font-bold leading-tight"><a class="truncate text-white" href="#">Jordan Rivers</a></div>
+                  <div class="flex items-center gap-1.5 font-bold leading-tight"><span class="truncate text-white">Jordan Rivers</span></div>
                   <div class="flex items-center gap-1 text-xs text-faint"><span>✨ main character</span><span>•</span><span>4d</span></div>
                 </div>
               </header>
@@ -703,20 +680,20 @@ const BASE_HTML = `<div class="min-h-screen">
             </div>
             <ul class="flex flex-col gap-3 mt-4">
               <li class="flex gap-2.5">
-                <a class="shrink-0" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <span class="shrink-0"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></span>
                 <div class="min-w-0 flex-1">
                   <div class="rounded-2xl px-3 py-2 bg-surface-2" style="border-top-left-radius:2px;">
-                    <div class="flex items-center gap-1.5"><a class="text-sm font-bold text-white" href="#">Sam K</a></div>
+                    <div class="flex items-center gap-1.5"><span class="text-sm font-bold text-white">Sam K</span></div>
                     <p class="whitespace-pre-wrap break-words text-sm leading-snug" style="color:#ececec;">this theme is so real for you</p>
                   </div>
                   <div class="mt-1 flex items-center gap-3 text-xs text-faint"><span>1mo</span><button class="font-semibold">♡ 1</button><button class="font-semibold">Reply</button></div>
                 </div>
               </li>
               <li class="flex gap-2.5">
-                <a class="shrink-0" href="#"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></a>
+                <span class="shrink-0"><span class="relative inline-flex items-center justify-center rounded-full bg-surface-2" style="width:32px;height:32px;"><img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=80&h=80&fit=crop&crop=faces" alt="" class="h-full w-full rounded-full object-cover"></span></span>
                 <div class="min-w-0 flex-1">
                   <div class="rounded-2xl px-3 py-2 bg-surface-2" style="border-top-left-radius:2px;">
-                    <div class="flex items-center gap-1.5"><a class="text-sm font-bold text-white" href="#">Angelo</a></div>
+                    <div class="flex items-center gap-1.5"><span class="text-sm font-bold text-white">Angelo</span></div>
                     <p class="whitespace-pre-wrap break-words text-sm leading-snug" style="color:#ececec;">okay the sparkle gif got me 😭</p>
                   </div>
                   <div class="mt-1 flex items-center gap-3 text-xs text-faint"><span>2mo</span><button class="font-semibold">♡</button><button class="font-semibold">Reply</button></div>
@@ -972,12 +949,6 @@ const cssCount = document.getElementById('cssCount');
 const htmlCount = document.getElementById('htmlCount');
 const charInfo = document.getElementById('charInfo');
 const renderState = document.getElementById('renderState');
-const handleInput = document.getElementById('handleInput');
-
-function getHandle(){
-  const raw = handleInput.value.trim().replace(/^@/, '').replace(/\s+/g, '_');
-  return raw || 'your_handle';
-}
 
 // tabs
 document.querySelectorAll('.tab').forEach(tab=>{
@@ -992,15 +963,13 @@ document.querySelectorAll('.tab').forEach(tab=>{
 function render(){
   const userCss = cssInput.value;
   const userHtml = htmlInput.value;
-  const handle = getHandle();
-  const baseHtml = BASE_HTML.split('__HANDLE__').join(handle);
   const doc = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <base href="about:blank">
     <style>${BASE_CSS}</style>
     <style id="user-css">${userCss}</style>
   </head><body class="seenu-profile-root">
     ${userHtml}
-    ${baseHtml}
+    ${BASE_HTML}
     <script>
       // Preview links are decorative only — never let them navigate this iframe.
       document.addEventListener('click', function(e){
@@ -1024,7 +993,6 @@ function scheduleRender(){
 }
 cssInput.addEventListener('input', scheduleRender);
 htmlInput.addEventListener('input', scheduleRender);
-handleInput.addEventListener('input', scheduleRender);
 
 document.getElementById('loadPresetBtn').addEventListener('click', ()=>{
   const key = document.getElementById('presetSelect').value;
